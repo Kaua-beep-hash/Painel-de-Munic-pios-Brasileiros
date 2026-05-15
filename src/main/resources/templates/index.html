@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Municípios BR — Painel IBGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="noise"></div>
+
+<header class="header">
+    <div class="header-inner">
+        <div class="logo">
+            <span class="logo-icon">🗺</span>
+            <div>
+                <span class="logo-title">Municípios BR</span>
+                <span class="logo-sub">Painel IBGE</span>
+            </div>
+        </div>
+        <div class="header-meta">
+            <span class="badge">API IBGE · Dados oficiais</span>
+        </div>
+    </div>
+</header>
+
+<main class="main">
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-label">Explorador geográfico</div>
+        <h1 class="hero-title">
+            Descubra o Brasil<br>
+            <span class="hero-accent">município a município</span>
+        </h1>
+        <p class="hero-desc">
+            Dados oficiais do IBGE para todos os 5.570 municípios brasileiros.
+            Selecione um estado e explore.
+        </p>
+    </section>
+
+    <!-- Erro de API -->
+    <div th:if="${erro}" class="alert-erro">
+        <span class="alert-icon">⚠️</span>
+        <span th:text="${erro}"></span>
+    </div>
+
+    <!-- Painel de consulta -->
+    <section class="painel">
+
+        <div class="painel-controles">
+            <div class="form-group">
+                <label class="form-label" for="selectEstado">Estado (UF)</label>
+                <div class="select-wrapper">
+                    <select id="selectEstado" class="form-select">
+                        <option value="">— selecione um estado —</option>
+                        <option th:each="e : ${estados}"
+                                th:value="${e.sigla}"
+                                th:text="${e.nome + ' (' + e.sigla + ')'}">
+                        </option>
+                    </select>
+                    <span class="select-arrow">▾</span>
+                </div>
+            </div>
+
+            <div class="form-group" id="groupBusca" style="display:none;">
+                <label class="form-label" for="inputBusca">Filtrar município</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🔍</span>
+                    <input type="text" id="inputBusca" class="form-input"
+                           placeholder="Digite o nome do município...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Loader -->
+        <div id="loader" class="loader" style="display:none;">
+            <div class="loader-dots">
+                <span></span><span></span><span></span>
+            </div>
+            <span class="loader-text">Consultando API IBGE...</span>
+        </div>
+
+        <!-- Erro inline -->
+        <div id="erroInline" class="alert-erro" style="display:none;">
+            <span class="alert-icon">⚠️</span>
+            <span id="erroMensagem"></span>
+        </div>
+
+        <!-- Stats -->
+        <div id="statsBar" class="stats-bar" style="display:none;">
+            <div class="stat">
+                <span class="stat-num" id="totalMunicipios">0</span>
+                <span class="stat-label">municípios</span>
+            </div>
+            <div class="stat-sep">·</div>
+            <div class="stat">
+                <span class="stat-num" id="totalFiltrados">0</span>
+                <span class="stat-label">exibidos</span>
+            </div>
+            <div class="stat-sep">·</div>
+            <div class="stat">
+                <span class="stat-num" id="estadoNome">—</span>
+                <span class="stat-label">estado</span>
+            </div>
+        </div>
+
+        <!-- Grid de municípios -->
+        <div id="gridMunicipios" class="grid-municipios"></div>
+
+        <!-- Estado vazio -->
+        <div id="estadoVazio" class="estado-vazio">
+            <div class="vazio-icon">🏙️</div>
+            <p>Selecione um estado acima para explorar seus municípios</p>
+        </div>
+
+    </section>
+</main>
+
+<footer class="footer">
+    <span>Dados fornecidos pela <strong>API pública do IBGE</strong> · 
+        <a href="https://servicodados.ibge.gov.br/api/docs/localidades" target="_blank">Documentação</a>
+    </span>
+    <span>Projeto Acadêmico · Spring Boot + Java 17</span>
+</footer>
+
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
